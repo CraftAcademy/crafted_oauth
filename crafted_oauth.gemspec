@@ -5,7 +5,7 @@ require 'crafted_oauth/version'
 
 Gem::Specification.new do |gem|
   gem.name          = "crafted-oauth"
-  gem.version       = Omniauth::Spotify::VERSION
+  gem.version       = Omniauth::CraftedOauth::VERSION
   gem.authors       = ["Craft Academy"]
   gem.email         = ["academy@craftacademy.se\n"]
   gem.description   = %q{OmniAuth strategy for CraftAcademy LMS Crafted}
