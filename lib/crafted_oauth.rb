@@ -15,9 +15,9 @@ module OmniAuth
       ]
 
       option :client_options,
-             site:           'https://class.craftacademy.co',
-             authorize_url:  'https://class.craftacademy.co/oauth2/authorize',
-             token_url:      'https://class.craftacademy.co/oauth2/access_token'
+             site:           domain_url,
+             authorize_url:  '/oauth2/authorize',
+             token_url:      '/oauth2/access_token'
 
       uid { raw_info['sub'] }
 
