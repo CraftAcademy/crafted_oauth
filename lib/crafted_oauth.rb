@@ -8,12 +8,15 @@ module OmniAuth
     class CraftedOauth < OmniAuth::Strategies::OAuth2
       option :name, 'crafted_oauth'
 
-      args %i[
-        client_id
-        client_secret
-        domain
-      ]
+      args %i[client_id client_secret domain]
 
+      def client
+        options.client_options.site = domain_url
+        options.client_options.authorize_url = '/oauth2/authorize'
+        options.client_options.token_url = '/oauth2/access_token'
+        options.client_options.userinfo_url = '/userinfo'
+        super
+      end
       option :client_options,
              site:           domain_url,
              authorize_url:  '/oauth2/authorize',
@@ -34,6 +37,8 @@ module OmniAuth
           'raw_info' => raw_info
         }
       end
+
+      private
 
       def image_url
         raw_info['profile_image']['image_url_full'] if raw_info['profile_image']['has_image']
