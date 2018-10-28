@@ -1,6 +1,4 @@
-# frozen_string_literal: true
-
-require 'omniauth/strategies/oauth2'
+require 'omniauth-oauth2'
 require 'date'
 
 module OmniAuth
@@ -14,38 +12,40 @@ module OmniAuth
         options.client_options.site = domain_url
         options.client_options.authorize_url = '/oauth2/authorize'
         options.client_options.token_url = '/oauth2/access_token'
-        options.client_options.userinfo_url = '/userinfo'
+        options.client_options.userinfo_url = '/oauth2/user_info'
         super
       end
-      option :client_options,
-             site:           domain_url,
-             authorize_url:  '/oauth2/authorize',
-             token_url:      '/oauth2/access_token'
 
       uid { raw_info['sub'] }
 
       info do
         {
           email: raw_info['email'],
-          name: raw_info['name'],
-          image_url: image_url
+          first_name: raw_info['given_name'],
+          last_name: raw_info['family_name'],
+          image: image_url
         }
       end
 
       extra do
         {
-          'raw_info' => raw_info
+          'raw_info' => raw_info,
+          'extra_info' => extra_info
         }
       end
 
       private
 
       def image_url
-        raw_info['profile_image']['image_url_full'] if raw_info['profile_image']['has_image']
+        extra_info['profile_image']['image_url_full'] if extra_info['profile_image']['has_image']
+      end
+
+      def extra_info
+        @extra_info ||= access_token.get('/api/user/v1/accounts').parsed.first
       end
 
       def raw_info
-        @raw_info ||= access_token.get('/api/user/v1/accounts').parsed.first
+        @raw_info ||= access_token.get(options.client_options.userinfo_url).parsed
       end
 
       def callback_url
